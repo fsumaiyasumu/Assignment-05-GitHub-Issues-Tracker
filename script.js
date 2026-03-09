@@ -2,9 +2,8 @@ let currentTab = 'all';
 let allIssues = [];
 let filteredIssues = [];
 
-
 const loginPage = document.getElementById('loginPage');
-const mainPage = document.getElementById('mainPage');
+const mainPage = document.getElementById('mainPage'); 
 const loginForm = document.getElementById('loginForm');
 const issuesGrid = document.getElementById('issuesGrid');
 const loadingSpinner = document.getElementById('loadingSpinner');
@@ -14,12 +13,10 @@ const searchBtn = document.getElementById('searchBtn');
 const issueModal = document.getElementById('issueModal');
 const tabButtons = document.querySelectorAll('.tab-btn');
 
-
 const DEMO_CREDENTIALS = {
     username: 'admin',
     password: 'admin123'
 };
-
 
 const API_ENDPOINTS = {
     allIssues: 'https://phi-lab-server.vercel.app/api/v1/lab/issues',
@@ -27,11 +24,9 @@ const API_ENDPOINTS = {
     searchIssues: (query) => `https://phi-lab-server.vercel.app/api/v1/lab/issues/search?q=${query}`
 };
 
-
 document.addEventListener('DOMContentLoaded', function() {
     setupEventListeners();
 });
-
 
 function setupEventListeners() {
   
@@ -71,37 +66,29 @@ function handleLogin(e) {
     const username = document.getElementById('username').value;
     const password = document.getElementById('password').value;
     
-    
     if (username === DEMO_CREDENTIALS.username && password === DEMO_CREDENTIALS.password) {
        
         loginPage.classList.add('hidden');
         mainPage.classList.remove('hidden');
         document.body.className = 'bg-gray-50 min-h-screen';
-        
-     
+    
         loadIssues();
     } else {
       
         showError('Invalid credentials. Please use admin/admin123');
     }
 }
-
-
 function showError(message) {
 
     const errorDiv = document.createElement('div');
     errorDiv.className = 'bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4';
     errorDiv.textContent = message;
     
-   
     loginForm.parentNode.insertBefore(errorDiv, loginForm);
-    
-    
     setTimeout(() => {
         errorDiv.remove();
     }, 3000);
 }
-
 
 async function loadIssues() {
     showLoadingSpinner();
@@ -115,7 +102,6 @@ async function loadIssues() {
         const apiResponse = await response.json();
         allIssues = apiResponse.data; 
         
-        
         demonstrateArrayOperations(allIssues);
         
         filterAndDisplayIssues();
@@ -127,19 +113,14 @@ async function loadIssues() {
     }
 }
 
-
 function demonstrateArrayOperations(issues) {
     console.log('=== Issues Array Operations Demo ===');
-    
-    
     console.log('Total issues:', issues.length);
     
-   
     const openIssues = issues.filter(issue => issue.status === 'open');
     const closedIssues = issues.filter(issue => issue.status === 'closed');
     console.log('Open issues:', openIssues.length);
     console.log('Closed issues:', closedIssues.length);
-    
     
     const highPriority = issues.filter(issue => issue.priority === 'high');
     const mediumPriority = issues.filter(issue => issue.priority === 'medium');
@@ -148,22 +129,18 @@ function demonstrateArrayOperations(issues) {
     console.log('Medium priority:', mediumPriority.length);
     console.log('Low priority:', lowPriority.length);
     
-    
     const allLabels = issues.flatMap(issue => issue.labels || []);
     const uniqueLabels = [...new Set(allLabels)];
     console.log('All labels:', uniqueLabels);
     
-    
     const issuesByJohn = issues.filter(issue => issue.author === 'john_doe');
     console.log('Issues by john_doe:', issuesByJohn.length);
-    
     
     const sortedByDate = [...issues].sort((a, b) => 
         new Date(b.createdAt) - new Date(a.createdAt)
     );
     console.log('Newest issue:', sortedByDate[0]?.title);
     
-   
     const groupedByStatus = issues.reduce((acc, issue) => {
         if (!acc[issue.status]) acc[issue.status] = [];
         acc[issue.status].push(issue);
@@ -171,12 +148,10 @@ function demonstrateArrayOperations(issues) {
     }, {});
     console.log('Grouped by status:', Object.keys(groupedByStatus));
     
-   
     const highPriorityOpen = issues.filter(issue => 
         issue.status === 'open' && issue.priority === 'high'
     );
     console.log('High priority open issues:', highPriorityOpen.length);
-    
     
     const simpleFormat = issues.map(issue => ({
         id: issue.id,
@@ -186,14 +161,12 @@ function demonstrateArrayOperations(issues) {
     }));
     console.log('Simple format (first 3):', simpleFormat.slice(0, 3));
     
-   
     const searchResults = issues.filter(issue => 
         issue.title.toLowerCase().includes('bug') || 
         issue.description.toLowerCase().includes('bug')
     );
     console.log('Bug-related issues:', searchResults.length);
 }
-
 
 async function handleSearch() {
     const query = searchInput.value.trim();
@@ -222,11 +195,9 @@ async function handleSearch() {
     }
 }
 
-
 function handleTabChange(e) {
     const selectedTab = e.target.dataset.tab;
     currentTab = selectedTab;
-    
 
     tabButtons.forEach(btn => {
         if (btn.dataset.tab === selectedTab) {
@@ -241,7 +212,6 @@ function handleTabChange(e) {
     filterAndDisplayIssues();
 }
 
-
 function filterAndDisplayIssues() {
    
     switch (currentTab) {
@@ -254,14 +224,11 @@ function filterAndDisplayIssues() {
         default:
             filteredIssues = allIssues;
     }
-    
 
     issueCount.textContent = filteredIssues.length;
  
     displayIssues(filteredIssues);
 }
-
-
 function displayIssues(issues) {
     issuesGrid.innerHTML = '';
     
@@ -280,7 +247,6 @@ function displayIssues(issues) {
         issuesGrid.appendChild(issueCard);
     });
 }
-
 
 function createIssueCard(issue) {
     const card = document.createElement('div');
@@ -338,12 +304,9 @@ function createIssueCard(issue) {
         </div>
     `;
     
-    
-    card.addEventListener('click', () => openIssueModal(issue));
-    
+    card.addEventListener('click', () => openIssueModal(issue)); 
     return card;
 }
-
 
 function getPriorityColor(priority) {
     switch (priority?.toUpperCase()) {
@@ -358,7 +321,6 @@ function getPriorityColor(priority) {
     }
 }
 
-
 async function openIssueModal(issue) {
     try {
        
@@ -366,10 +328,8 @@ async function openIssueModal(issue) {
         if (!response.ok) {
             throw new Error('Failed to fetch issue details');
         }
-        
         const apiResponse =  await response.json();
         const fullIssue = apiResponse.data;
-        
         
         document.getElementById('modalTitle').textContent = fullIssue.title;
         document.getElementById('modalStatus').textContent = fullIssue.status;
@@ -388,7 +348,6 @@ async function openIssueModal(issue) {
         document.getElementById('modalNumber').textContent = fullIssue.id;
         document.getElementById('modalDescription').textContent = fullIssue.description || 'No description available';
         
-        
         const modalLabels = document.getElementById('modalLabels');
         modalLabels.innerHTML = '';
         if (fullIssue.labels && fullIssue.labels.length > 0) {
@@ -402,7 +361,7 @@ async function openIssueModal(issue) {
             modalLabels.innerHTML = '<span class="text-gray-500 text-sm">No labels</span>';
         }
         
-        
+ 
         issueModal.classList.add('show');
         
     } catch (error) {
